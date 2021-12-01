@@ -26,7 +26,7 @@ library:
   source-dirs: src
 
 executables:
-  aoc2021-exe:
+  day-01:
     main:                Main.hs
     source-dirs:         day-01
     ghc-options:
