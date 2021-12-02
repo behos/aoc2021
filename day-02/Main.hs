@@ -7,15 +7,15 @@ main = do
   content <- readFile "inputs/day-02.txt"
   let input = parseInput content
   putStrLn "Part 1"
-  putStrLn $ show $ result $ navigate input (Position (0, 0))
+  print $ result $ navigate input (Position (0, 0))
   putStrLn "Part 2"
-  putStrLn $ show $ result $ navigate input (AimPosition (0, 0, 0))
+  print $ result $ navigate input (AimPosition (0, 0, 0))
 
 parseInput :: String -> [Direction]
 parseInput content = map (pairer . words) $ lines content
 
 pairer :: [String] -> Direction
-pairer (n:v:[]) = (n, Lib.toInt v)
+pairer [n, v] = (n, Lib.toInt v)
 pairer _        = error "invalid input"
 
 type Direction = (String, Int)

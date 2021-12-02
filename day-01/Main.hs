@@ -7,9 +7,9 @@ main = do
   content <- readFile "inputs/day-01.txt"
   let input = map Lib.toInt $ lines content
   putStrLn "Part 1"
-  putStrLn $ show $ countIncreasing input
+  print $ countIncreasing input
   putStrLn "Part 2"
-  putStrLn $ show $ countWindows input
+  print $ countWindows input
 
 countIncreasing :: [Int] -> Int
 countIncreasing (a:rest@(b:_))
