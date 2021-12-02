@@ -12,7 +12,7 @@ main = do
   putStrLn $ show $ result $ navigate input (AimPosition (0, 0, 0))
 
 parseInput :: String -> [Direction]
-parseInput content = map pairer $ map words $ lines content
+parseInput content = map (pairer . words) $ lines content
 
 pairer :: [String] -> Direction
 pairer (n:v:[]) = (n, Lib.toInt v)
