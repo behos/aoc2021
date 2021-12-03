@@ -44,6 +44,15 @@ executables:
     - -with-rtsopts=-N
     dependencies:
     - aoc2021
+  day-03:
+    main:                Main.hs
+    source-dirs:         day-03
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - aoc2021
 
 tests:
   aoc2021-test:
