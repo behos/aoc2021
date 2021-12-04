@@ -6,6 +6,8 @@ author:              "Author name here"
 maintainer:          "example@example.com"
 copyright:           "2021 Author name here"
 
+default-extensions: TupleSections
+
 extra-source-files:
 - README.md
 - ChangeLog.md
@@ -53,6 +55,17 @@ executables:
     - -with-rtsopts=-N
     dependencies:
     - aoc2021
+  day-04:
+    main:                Main.hs
+    source-dirs:         day-04
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - aoc2021
+    - split
+    - unordered-containers
 
 tests:
   aoc2021-test:
