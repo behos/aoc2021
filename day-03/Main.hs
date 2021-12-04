@@ -1,6 +1,6 @@
 module Main where
 
-import Lib
+import           Lib
 
 main :: IO ()
 main = do
@@ -38,9 +38,9 @@ addDatapoint datapoint (runningTotal, count) =
   (add runningTotal datapoint, count + 1)
 
 add :: [Int] -> [Int] -> [Int]
-add [] [] = []
+add [] []             = []
 add (a : as) (b : bs) = (a + b) : add as bs
-add _ _ = error "invalid input"
+add _ _               = error "invalid input"
 
 normalize :: [Int] -> Int -> [Int]
 normalize (a : as) threshold

@@ -2,11 +2,11 @@
 
 module Main where
 
-import Data.HashMap.Strict ((!), (!?))
+import           Data.HashMap.Strict ((!), (!?))
 import qualified Data.HashMap.Strict as HashMap
-import Data.List
-import Data.List.Split
-import Lib
+import           Data.List
+import           Data.List.Split
+import           Lib
 
 main :: IO ()
 main = do
@@ -21,12 +21,12 @@ type Point = (Int, Int)
 
 data PointState = PointState
   { checked :: Bool,
-    val :: Int
+    val     :: Int
   }
   deriving (Show)
 
 data Board = Board
-  { numPoints :: HashMap.HashMap Int Point,
+  { numPoints   :: HashMap.HashMap Int Point,
     pointStates :: HashMap.HashMap Point PointState
   }
   deriving (Show)
@@ -93,7 +93,7 @@ processNumber x board = case numPoints board !? x of
 
 wonWithNumber :: Int -> Board -> Bool
 wonWithNumber num board = case numPoints board !? num of
-  Nothing -> False
+  Nothing     -> False
   Just (x, y) -> isComplete board (row x) || isComplete board (col y)
 
 isComplete :: Board -> [Point] -> Bool

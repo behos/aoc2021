@@ -1,6 +1,6 @@
 module Main where
 
-import Lib
+import           Lib
 
 main :: IO ()
 main = do
@@ -16,7 +16,7 @@ parseInput content = map (pairer . words) $ lines content
 
 pairer :: [String] -> Direction
 pairer [n, v] = (n, Lib.toInt v)
-pairer _ = error "invalid input"
+pairer _      = error "invalid input"
 
 type Direction = (String, Int)
 
@@ -30,9 +30,9 @@ class Navigate a where
 
 instance Navigate Position where
   move ("forward", n) (Position (p, d)) = Position (n + p, d)
-  move ("down", n) (Position (p, d)) = Position (p, n + d)
-  move ("up", n) (Position (p, d)) = Position (p, d - n)
-  move _ _ = error "invalid input"
+  move ("down", n) (Position (p, d))    = Position (p, n + d)
+  move ("up", n) (Position (p, d))      = Position (p, d - n)
+  move _ _                              = error "invalid input"
 
   result (Position (p, d)) = p * d
 
@@ -47,4 +47,4 @@ instance Navigate AimPosition where
 
 navigate :: (Navigate a) => [Direction] -> a -> a
 navigate (dir : dirs) pos = navigate dirs $ move dir pos
-navigate [] pos = pos
+navigate [] pos           = pos
