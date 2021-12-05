@@ -32,11 +32,11 @@ data Board = Board
   deriving (Show)
 
 parseInput :: String -> ([Int], [Board])
-parseInput content = do
+parseInput content =
   let (rawInputs : rawBoards) = splitOn "\n\n" content
-  let inputs = Lib.toInt <$> splitOn "," rawInputs
-  let boards = boardFromString <$> rawBoards
-  (inputs, boards)
+      inputs = Lib.toInt <$> splitOn "," rawInputs
+      boards = boardFromString <$> rawBoards
+  in (inputs, boards)
 
 boardFromString :: String -> Board
 boardFromString content =
@@ -51,35 +51,35 @@ asPointPairs _ _ [] = []
 
 boardFromVec :: [(Point, Int)] -> Board
 boardFromVec [] = Board {numPoints = HashMap.empty, pointStates = HashMap.empty}
-boardFromVec ((point, x) : xs) = do
+boardFromVec ((point, x) : xs) =
   let board = boardFromVec xs
-  board
-    { numPoints =
-        HashMap.insert x point $
-          numPoints board,
-      pointStates =
-        HashMap.insert point PointState {checked = False, val = x} $
-          pointStates board
-    }
+  in board
+     { numPoints =
+         HashMap.insert x point $
+         numPoints board,
+       pointStates =
+         HashMap.insert point PointState {checked = False, val = x} $
+         pointStates board
+     }
 
 play :: [Int] -> [Board] -> Int
-play input boards = do
+play input boards =
   let (num, board) = head $ winningBoards input boards
-  calculateScore board num
+  in calculateScore board num
 
 playToLose :: [Int] -> [Board] -> Int
-playToLose input boards = do
+playToLose input boards =
   let (num, board) = last $ winningBoards input boards
-  calculateScore board num
+  in calculateScore board num
 
 winningBoards :: [Int] -> [Board] -> [(Int, Board)]
 winningBoards [] _ = error "not all boards won"
 winningBoards _ [] = []
-winningBoards (x : xs) boards = do
+winningBoards (x : xs) boards =
   let (winners, losers) =
         partition (wonWithNumber x) $
           processNumber x <$> boards
-  map (x,) winners ++ winningBoards xs losers
+  in map (x,) winners ++ winningBoards xs losers
 
 processNumber :: Int -> Board -> Board
 processNumber x board = case numPoints board !? x of

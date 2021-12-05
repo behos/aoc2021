@@ -18,16 +18,16 @@ toIntSeq :: [Char] -> [Int]
 toIntSeq = map (Lib.toInt . (: []))
 
 powerConsumption :: [[Int]] -> Int
-powerConsumption metrics = do
+powerConsumption metrics =
   let gamma = calculateGamma metrics
-  let epsilon = invert gamma
-  toDec gamma * toDec epsilon
+      epsilon = invert gamma
+  in toDec gamma * toDec epsilon
 
 calculateGamma :: [[Int]] -> [Int]
-calculateGamma (m : ms) = do
+calculateGamma (m : ms) =
   let (total, count) = foldr addDatapoint (m, 1) ms
-  let threshold = div count 2 + mod count 2 -- round up division in case of equality
-  normalize total threshold
+      threshold = div count 2 + mod count 2 -- round up division in case of equality
+  in normalize total threshold
 calculateGamma [] = error "did not receive any metrics"
 
 calculateEpsilon :: [[Int]] -> [Int]
@@ -57,13 +57,13 @@ toDec = foldr (\x y -> x + 2 * y) 0 . reverse
 maskFilter :: ([[Int]] -> [Int]) -> [[Int]] -> [Int]
 maskFilter _ [] = error "invalid input"
 maskFilter _ [result] = result -- if we only have one result, then we are done
-maskFilter f metrics = do
+maskFilter f metrics =
   let (m : _) = f metrics
-  let getMatchingSuffixes = map (\(_ : rs) -> rs) . filter (\(r : _) -> r == m)
-  m : maskFilter f (getMatchingSuffixes metrics)
+      getMatchingSuffixes = map (\(_ : rs) -> rs) . filter (\(r : _) -> r == m)
+  in m : maskFilter f (getMatchingSuffixes metrics)
 
 lifeSupportRating :: [[Int]] -> Int
-lifeSupportRating metrics = do
+lifeSupportRating metrics =
   let oxygenGeneratorRating = maskFilter calculateGamma metrics
-  let co2ScrubberRating = maskFilter calculateEpsilon metrics
-  toDec oxygenGeneratorRating * toDec co2ScrubberRating
+      co2ScrubberRating = maskFilter calculateEpsilon metrics
+  in toDec oxygenGeneratorRating * toDec co2ScrubberRating
