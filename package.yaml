@@ -66,6 +66,17 @@ executables:
     - aoc2021
     - split
     - unordered-containers
+  day-05:
+    main:                Main.hs
+    source-dirs:         day-05
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - aoc2021
+    - split
+    - unordered-containers
 
 tests:
   aoc2021-test:
