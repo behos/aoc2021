@@ -40,28 +40,16 @@ executables:
   day-02:
     main:                Main.hs
     source-dirs:         day-02
-    ghc-options:
-    - -threaded
-    - -rtsopts
-    - -with-rtsopts=-N
     dependencies:
     - aoc2021
   day-03:
     main:                Main.hs
     source-dirs:         day-03
-    ghc-options:
-    - -threaded
-    - -rtsopts
-    - -with-rtsopts=-N
     dependencies:
     - aoc2021
   day-04:
     main:                Main.hs
     source-dirs:         day-04
-    ghc-options:
-    - -threaded
-    - -rtsopts
-    - -with-rtsopts=-N
     dependencies:
     - aoc2021
     - split
@@ -69,10 +57,6 @@ executables:
   day-05:
     main:                Main.hs
     source-dirs:         day-05
-    ghc-options:
-    - -threaded
-    - -rtsopts
-    - -with-rtsopts=-N
     dependencies:
     - aoc2021
     - split
@@ -80,10 +64,6 @@ executables:
   day-06:
     main:                Main.hs
     source-dirs:         day-06
-    ghc-options:
-    - -threaded
-    - -rtsopts
-    - -with-rtsopts=-N
     dependencies:
     - aoc2021
     - split
