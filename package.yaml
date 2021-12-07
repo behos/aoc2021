@@ -23,6 +23,8 @@ description:         Please see the README on GitHub at <https://github.com/gith
 
 dependencies:
 - base >= 4.7 && < 5
+- split
+- unordered-containers
 
 library:
   source-dirs: src
@@ -52,22 +54,21 @@ executables:
     source-dirs:         day-04
     dependencies:
     - aoc2021
-    - split
-    - unordered-containers
   day-05:
     main:                Main.hs
     source-dirs:         day-05
     dependencies:
     - aoc2021
-    - split
-    - unordered-containers
   day-06:
     main:                Main.hs
     source-dirs:         day-06
     dependencies:
     - aoc2021
-    - split
-
+  day-07:
+    main:                Main.hs
+    source-dirs:         day-07
+    dependencies:
+    - aoc2021
 tests:
   aoc2021-test:
     main:                Spec.hs
