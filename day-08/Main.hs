@@ -59,22 +59,13 @@ asSegments :: String -> [NumberSegments]
 asSegments = (<$>) HashSet.fromList . words
 
 segmentMapping :: [NumberSegments] -> NumberPairs
-segmentMapping entries = let
-  (one:seven:four:remaining) = sortBy compareSegments entries
-  eight = last remaining
-  mapping = HashMap.fromList [(1, one), (7, seven), (4, four), (8, eight)]
-  in HashMap.toList $ findNums mapping [6, 0, 9, 2, 5, 3] (init remaining)
-
-compareSegments :: NumberSegments -> NumberSegments -> Ordering
-compareSegments a b
-  | HashSet.size a < HashSet.size b = LT
-  | otherwise = GT
+segmentMapping entries = HashMap.toList $ findNums HashMap.empty [1, 7, 4, 8, 6, 0, 9, 2, 5, 3] entries
 
 findNums :: NumberMapping -> [Int] -> [NumberSegments] -> NumberMapping
 findNums mapping [] _ = mapping
 findNums mapping (x:xs) candidates = let
   (num, remaining) = findNum mapping x candidates
-  in findNums (HashMap.insert x  num mapping) xs remaining
+  in findNums (HashMap.insert x num mapping) xs remaining
 
 findNum :: NumberMapping -> Int -> [NumberSegments] -> (NumberSegments, [NumberSegments])
 findNum _ num [] = error $ printf "could not find number %d" num
@@ -85,27 +76,31 @@ findNum nums num (x:xs)
       in (found, x:remaining)
 
 is :: Int -> NumberMatcher
-is 9 = \numbers x -> let
-  four = numbers ! 4
-  eight = numbers ! 8
-  in HashSet.size x == 6 && HashSet.size (HashSet.intersection four $ HashSet.difference eight x) == 0
 is 0 = \numbers x -> let
   four = numbers ! 4
   eight = numbers ! 8
   in HashSet.size x == 6 && HashSet.size (HashSet.intersection four $ HashSet.difference eight x) == 1
-is 6 = \numbers x -> let
-  one = numbers ! 1
-  eight = numbers ! 8
-  in HashSet.size x == 6 && HashSet.size (HashSet.intersection one $ HashSet.difference eight x) == 1
+is 1 = \numbers x -> HashSet.size x == 2
 is 2 = \numbers x -> let
   four = numbers ! 4
   eight = numbers ! 8
   in HashSet.size x == 5 && HashSet.size (HashSet.intersection four $ HashSet.difference eight x) == 2
-is 5 = \numbers x -> let
-  one = numbers ! 1
-  nine = numbers ! 9
-  in HashSet.size x == 5 && HashSet.size (HashSet.intersection one $ HashSet.difference nine x) == 1
 is 3 = \numbers x -> let
   four = numbers ! 4
   nine = numbers ! 9
   in HashSet.size x == 5 && HashSet.size (HashSet.intersection four $ HashSet.difference nine x) == 1
+is 4 = \numbers x -> HashSet.size x == 4
+is 5 = \numbers x -> let
+  one = numbers ! 1
+  nine = numbers ! 9
+  in HashSet.size x == 5 && HashSet.size (HashSet.intersection one $ HashSet.difference nine x) == 1
+is 6 = \numbers x -> let
+  one = numbers ! 1
+  eight = numbers ! 8
+  in HashSet.size x == 6 && HashSet.size (HashSet.intersection one $ HashSet.difference eight x) == 1
+is 7 = \numbers x -> HashSet.size x == 3
+is 8 = \numbers x -> HashSet.size x == 7
+is 9 = \numbers x -> let
+  four = numbers ! 4
+  eight = numbers ! 8
+  in HashSet.size x == 6 && HashSet.size (HashSet.intersection four $ HashSet.difference eight x) == 0
