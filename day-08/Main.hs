@@ -20,7 +20,7 @@ main = do
   let entries = parseInput content
   putStrLn "Part 1"
   print $ sumEasyNums entries
-  putStrLn "Part 1"
+  putStrLn "Part 2"
   print $ sumAll entries
 
 sumEasyNums :: [Entry] -> Int

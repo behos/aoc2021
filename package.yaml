@@ -25,6 +25,7 @@ dependencies:
 - base >= 4.7 && < 5
 - split
 - unordered-containers
+- vector
 
 library:
   source-dirs: src
@@ -72,6 +73,11 @@ executables:
   day-08:
     main:                Main.hs
     source-dirs:         day-08
+    dependencies:
+    - aoc2021
+  day-09:
+    main:                Main.hs
+    source-dirs:         day-09
     dependencies:
     - aoc2021
 tests:
