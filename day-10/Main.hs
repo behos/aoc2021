@@ -4,7 +4,6 @@ import           Data.List
 import           Lib
 
 data SyntaxError = Incomplete [Char] | Corrupted Char
-data Symbol = Opening Char | Closing Char
 
 main :: IO ()
 main = do
