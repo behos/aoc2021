@@ -2,12 +2,13 @@ module Main where
 
 import qualified Data.HashSet as S
 import           Data.List
+import           Data.Maybe
 import           Data.Vector  ((!))
 import qualified Data.Vector  as V
 import           Lib
 
 type Matrix = V.Vector (V.Vector Int)
-type Group = S.HashSet (Int, Int)
+type Group = S.HashSet Point
 
 main :: IO ()
 main = do
@@ -20,43 +21,36 @@ main = do
 
 sumRiskLevels :: Matrix -> Int
 sumRiskLevels m = sum
-  $ (+ 1) . (\(x, y) -> m ! x ! y) <$> S.toList (minimalPoints 0 0 m)
+  $ (+ 1) . (\(x, y) -> m ! x ! y) <$> S.toList (minimalPoints m (0, 0))
 
-minimalPoints :: Int -> Int -> Matrix -> Group
-minimalPoints x y m
+minimalPoints :: Matrix -> Point -> Group
+minimalPoints m p@(x, y)
   | x == V.length m = S.empty
-  | y == V.length (m ! 0) = minimalPoints (x + 1) 0 m
-  | otherwise =
-    if isMinimal x y m
-    then  S.insert (x, y) $ minimalPoints x (y + 1) m
-    else minimalPoints x (y + 1) m
+  | y == V.length (m ! 0) = minimalPoints m (x + 1, 0)
+  | otherwise = S.union
+    (if isMinimal m p then S.singleton p else S.empty)
+    $ minimalPoints m (x, y + 1)
 
-isMinimal :: Int -> Int -> Matrix -> Bool
-isMinimal x y m = let
-  in all ((m ! x ! y <) . (\(x, y) -> m ! x ! y)) $ getNeighbors x y m
+isMinimal :: Matrix -> Point -> Bool
+isMinimal m p@(x, y) = all ((m ! x ! y <) . (\(x, y) -> m ! x ! y)) $ getNeighbors m p
 
-getNeighbors :: Int -> Int -> Matrix -> Group
-getNeighbors x y m =  S.fromList (
-  getPoint (x + 1) y m ++
-  getPoint (x - 1) y m ++
-  getPoint x (y - 1) m ++
-  getPoint x (y + 1) m
-  )
-
-getPoint :: Int -> Int -> Matrix -> [(Int, Int)]
-getPoint x y m
-  | x < 0 || y < 0 || x == V.length m || y == V.length (m ! 0) = []
-  | otherwise = [(x, y)]
+getNeighbors :: Matrix -> Point -> Group
+getNeighbors m (x, y) =  S.fromList $ catMaybes [
+  if x < V.length m - 1 then Just (x + 1, y) else Nothing,
+  if x > 0 then Just (x - 1, y) else Nothing,
+  if y < V.length (m ! 0) - 1 then Just (x, y + 1) else Nothing,
+  if y > 0 then Just (x, y - 1) else Nothing
+  ]
 
 findLargestBasins :: Matrix -> Int
 findLargestBasins m = let
   (a:b:c:_) = sortBy (flip compare)
-    $ S.size <$> S.toList ( S.map (getBasin m . S.singleton) $ minimalPoints 0 0 m)
+    $ S.size <$> S.toList ( S.map (getBasin m . S.singleton) $ minimalPoints m (0, 0))
   in a * b * c
 
 getBasin :: Matrix -> Group -> Group
 getBasin m g = let
-  neighbors = foldr S.union g (S.map (\(x, y) -> getNeighbors x y m) g)
+  neighbors = foldr S.union g $ S.map (getNeighbors m) g
   expanded = S.filter (\(x, y) -> m ! x ! y < 9) neighbors
   in
   if expanded == g

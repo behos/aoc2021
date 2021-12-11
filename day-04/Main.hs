@@ -17,8 +17,6 @@ main = do
   putStrLn "Part 2"
   print $ playToLose input boards
 
-type Point = (Int, Int)
-
 data PointState = PointState
   { checked :: Bool,
     val     :: Int

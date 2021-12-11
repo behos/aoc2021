@@ -6,7 +6,6 @@ import           Data.List
 import           Data.Maybe
 import           Lib
 
-type Point = (Int, Int)
 type Matrix = H.HashMap Point Int
 
 main :: IO ()

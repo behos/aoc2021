@@ -13,7 +13,6 @@ main = do
   putStrLn "Part 2"
   print $ findVents lines
 
-type Point = (Int, Int)
 type Line = (Point, Point)
 
 parseInput :: String -> [Line]

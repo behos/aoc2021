@@ -3,6 +3,7 @@ module Lib
     , toIntList
     , to2dVec
     , toHashMapMatrix
+    , Point
     ) where
 
 import qualified Data.HashMap.Strict as H
