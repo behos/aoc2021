@@ -39,11 +39,11 @@ bumpAll :: Matrix -> Matrix
 bumpAll m = foldr bumpPoint m $ H.keys m
 
 bumpPoint :: Point -> Matrix -> Matrix
-bumpPoint p@(x, y) m
-  | isNothing (m !? p) = m
-  | m ! p == 9 = foldr bumpPoint (H.insert p 10 m) (neighbors p)
-  | otherwise = H.adjust (+1) p m
-
+bumpPoint p m = let
+  updated = H.adjust (+1) p m
+  in case updated !? p of
+    Just 10 -> foldr bumpPoint updated (neighbors p)
+    _ -> updated
 
 resetFlashing :: Matrix -> Matrix
 resetFlashing = H.map (\v -> if v > 9 then 0 else v)
