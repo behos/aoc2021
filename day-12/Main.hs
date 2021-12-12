@@ -8,6 +8,7 @@ import qualified Data.HashMap.Strict as H
 import qualified Data.HashSet        as S
 import           Data.Hashable
 import           Data.List.Split
+import           Debug.Trace
 import           GHC.Generics        (Generic)
 
 data Cave = Small String | Big String | Start | End
@@ -50,24 +51,20 @@ doInsert c Nothing   = Just $ S.singleton c
 doInsert c (Just cs) = Just $ S.insert c cs
 
 findAllPaths :: CaveSystem -> [[Cave]]
-findAllPaths cs = explore cs (True, S.singleton Start) Start
+findAllPaths cs = explore cs (True, S.empty) Start
 
 findMorePaths :: CaveSystem -> S.HashSet [Cave]
-findMorePaths cs = S.fromList $ explore cs (False, S.singleton Start) Start
+findMorePaths cs = S.fromList $ explore cs (False, S.empty) Start
 
--- This method is finding duplicates for the cases where we actually don't
--- visit any small cave twice. Luckily immutable lists are hashable so we can
--- dedup through a set.
 explore :: CaveSystem -> Exclusion -> Cave -> [[Cave]]
 explore _ _ End = [[End]]
-explore cs eo c = let
-  paths = concatMap (flip (adjacent cs) c) (exclude eo c)
-  in (c:) <$> concatMap (uncurry (explore cs)) paths
+explore _ (_, ex) Start
+  | S.member Start ex = []
+explore _ (True, ex) c
+  | S.member c ex = []
+explore cs e c = (c:) <$> concatMap (explore cs (exclude e c)) (cs ! c)
 
-adjacent :: CaveSystem -> Exclusion -> Cave -> [(Exclusion, Cave)]
-adjacent cs fe@(_, e) c = [(fe, c) | c <- S.toList $ S.difference (cs ! c) e]
-
-exclude :: Exclusion -> Cave -> [Exclusion]
-exclude (False, cs) c@(Small _) = [(True, cs), (False, S.insert c cs)]
-exclude (True, cs) c@(Small _)  = [(True, S.insert c cs)]
-exclude e _                     = [e]
+exclude :: Exclusion -> Cave -> Exclusion
+exclude (b, cs) Start = (b, S.insert Start cs)
+exclude (b, cs) c@(Small _) = (b || S.member c cs, S.insert c cs)
+exclude e _ = e
