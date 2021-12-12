@@ -50,31 +50,31 @@ doInsert c Nothing   = Just $ S.singleton c
 doInsert c (Just cs) = Just $ S.insert c cs
 
 findAllPaths :: CaveSystem -> [[Cave]]
-findAllPaths cs = explore (True, S.singleton Start) cs Start
+findAllPaths cs = explore cs (True, S.singleton Start) Start
 
 findMorePaths :: CaveSystem -> S.HashSet [Cave]
-findMorePaths cs = S.fromList $ explore (False, S.singleton Start) cs Start
+findMorePaths cs = S.fromList $ explore cs (False, S.singleton Start) Start
 
 -- This method is finding duplicates for the cases where we actually don't
 -- visit any small cave twice. Luckily immutable lists are hashable so we can
 -- dedup through a set.
-explore :: Exclusion -> CaveSystem -> Cave -> [[Cave]]
+explore :: CaveSystem -> Exclusion -> Cave -> [[Cave]]
 explore _ _ End = [[End]]
-explore eo cs c = (c:) <$> exploreOptions cs c (exclude c eo)
+explore cs eo c = (c:) <$> exploreOptions cs (exclude eo c) c
 
-exploreOptions :: CaveSystem -> Cave -> [Exclusion] -> [[Cave]]
-exploreOptions cs c = concatMap (exploreOption cs c)
+exploreOptions :: CaveSystem -> [Exclusion] -> Cave -> [[Cave]]
+exploreOptions cs es c = concatMap (flip (exploreOption cs) c) es
 
-exploreOption :: CaveSystem -> Cave -> Exclusion -> [[Cave]]
-exploreOption cs c o = exploreCaves o cs (adjacentCaves cs c o)
+exploreOption :: CaveSystem -> Exclusion -> Cave -> [[Cave]]
+exploreOption cs e = exploreCaves cs e . adjacent cs e
 
-exploreCaves :: Exclusion -> CaveSystem -> [Cave] -> [[Cave]]
-exploreCaves e cs = concatMap (explore e cs)
+exploreCaves :: CaveSystem -> Exclusion -> [Cave] -> [[Cave]]
+exploreCaves cs = concatMap . explore cs
 
-adjacentCaves :: CaveSystem -> Cave -> Exclusion -> [Cave]
-adjacentCaves cs c = S.toList . S.difference (cs ! c) . snd
+adjacent :: CaveSystem -> Exclusion -> Cave -> [Cave]
+adjacent cs (_, e) c = S.toList $ S.difference (cs ! c) e
 
-exclude :: Cave -> Exclusion -> [Exclusion]
-exclude c@(Small _) (False, cs) = [(True, cs), (False, S.insert c cs)]
-exclude c@(Small _) (True, cs) = [(True, S.insert c cs)]
-exclude _ fe = [fe]
+exclude :: Exclusion -> Cave -> [Exclusion]
+exclude (False, cs) c@(Small _) = [(True, cs), (False, S.insert c cs)]
+exclude (True, cs) c@(Small _)  = [(True, S.insert c cs)]
+exclude e _                     = [e]
