@@ -60,19 +60,12 @@ findMorePaths cs = S.fromList $ explore cs (False, S.singleton Start) Start
 -- dedup through a set.
 explore :: CaveSystem -> Exclusion -> Cave -> [[Cave]]
 explore _ _ End = [[End]]
-explore cs eo c = (c:) <$> exploreOptions cs (exclude eo c) c
+explore cs eo c = let
+  paths = concatMap (flip (adjacent cs) c) (exclude eo c)
+  in (c:) <$> concatMap (uncurry (explore cs)) paths
 
-exploreOptions :: CaveSystem -> [Exclusion] -> Cave -> [[Cave]]
-exploreOptions cs es c = concatMap (flip (exploreOption cs) c) es
-
-exploreOption :: CaveSystem -> Exclusion -> Cave -> [[Cave]]
-exploreOption cs e = exploreCaves cs e . adjacent cs e
-
-exploreCaves :: CaveSystem -> Exclusion -> [Cave] -> [[Cave]]
-exploreCaves cs = concatMap . explore cs
-
-adjacent :: CaveSystem -> Exclusion -> Cave -> [Cave]
-adjacent cs (_, e) c = S.toList $ S.difference (cs ! c) e
+adjacent :: CaveSystem -> Exclusion -> Cave -> [(Exclusion, Cave)]
+adjacent cs fe@(_, e) c = [(fe, c) | c <- S.toList $ S.difference (cs ! c) e]
 
 exclude :: Exclusion -> Cave -> [Exclusion]
 exclude (False, cs) c@(Small _) = [(True, cs), (False, S.insert c cs)]
