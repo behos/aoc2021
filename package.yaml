@@ -26,6 +26,7 @@ dependencies:
 - split
 - unordered-containers
 - vector
+- hashable
 
 library:
   source-dirs: src
@@ -88,6 +89,11 @@ executables:
   day-11:
     main:                Main.hs
     source-dirs:         day-11
+    dependencies:
+    - aoc2021
+  day-12:
+    main:                Main.hs
+    source-dirs:         day-12
     dependencies:
     - aoc2021
 tests:
