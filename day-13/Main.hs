@@ -52,8 +52,8 @@ op f (x, y) (cx, cy) = (f x cx, f y cy)
 printPoints :: Points -> String
 printPoints p = let
   (mx, my) = foldr (op max) (0, 0) p
-  in intercalate "\n" $ printRow p my <$> [0..mx]
+  in intercalate "\n" $ printRow p mx <$> [0..my]
 
 printRow :: Points -> Int -> Int -> String
-printRow p my row = map
-  (\col -> if S.member (row, my - col) p then '#' else '.') [0..my]
+printRow p mx col = map
+  (\row -> if S.member (row, col) p then 'O' else ' ') [0..mx]
