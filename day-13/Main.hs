@@ -21,17 +21,17 @@ main = do
 
 parseInput :: String -> (Points, [Fold])
 parseInput content = let
-  (rawPoints:rawFolds:_) = splitOn "\n\n" content
+  [rawPoints, rawFolds] = splitOn "\n\n" content
   points = toPoint <$> lines rawPoints
   folds = toFold <$> lines rawFolds
   in (S.fromList points, folds)
 
 toFold :: String -> Fold
 toFold raw = let
-  (_:_:instruction:_) = words raw
+  [_, _, instruction] = words raw
   in case splitOn "=" instruction of
-    ("x":v:_) -> X $ toInt v
-    ("y":v:_) -> Y $ toInt v
+    ["x", v] -> X $ toInt v
+    ["y", v] -> Y $ toInt v
 
 foldPoints :: Fold -> Points -> Points
 foldPoints f p = let

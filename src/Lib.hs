@@ -15,7 +15,7 @@ type Point = (Int, Int)
 
 toPoint :: String -> Point
 toPoint input = let
-  (x:y:_) = toInt <$> splitOn "," input
+  [x, y] = toInt <$> splitOn "," input
   in (x, y)
 
 toInt :: String -> Int
@@ -33,7 +33,6 @@ toHashMapMatrix = H.fromList
   (\(i, line) ->
      (\(j, c) -> ((i, j), toInt [c])) <$> zip [0..] line
   ) . zip [0..] . lines
-
 
 toVec :: String -> V.Vector Int
 toVec input = V.unfoldr iter $ toInt . (: []) <$> input
