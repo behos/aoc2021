@@ -3,7 +3,6 @@ module Main where
 import           Data.HashMap.Strict ((!), (!?))
 import qualified Data.HashMap.Strict as H
 import           Data.List
-import           Data.Maybe
 import           Lib
 
 type Matrix = H.HashMap Point Int
