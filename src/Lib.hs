@@ -3,13 +3,20 @@ module Lib
     , toIntList
     , to2dVec
     , toHashMapMatrix
+    , toPoint
     , Point
     ) where
 
 import qualified Data.HashMap.Strict as H
 import qualified Data.Vector         as V
+import           Data.List.Split
 
 type Point = (Int, Int)
+
+toPoint :: String -> Point
+toPoint input = let
+  (x:y:_) = toInt <$> splitOn "," input
+  in (x, y)
 
 toInt :: String -> Int
 toInt input = read input :: Int

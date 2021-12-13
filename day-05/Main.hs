@@ -23,11 +23,6 @@ toLine raw =
   let (from:to:_) = splitOn " -> " raw
   in (toPoint from, toPoint to)
 
-toPoint :: String -> Point
-toPoint raw =
-  let (x:y:_) = splitOn "," raw
-  in (Lib.toInt x, Lib.toInt y)
-
 isStraight :: Line -> Bool
 isStraight ((x1, y1), (x2, y2)) = x1 == x2 || y1 == y2
 
