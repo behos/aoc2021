@@ -10,8 +10,6 @@ type Rules = H.HashMap String Char
 type Stock = H.HashMap String Int
 type Counts = H.HashMap Char Int
 
-ctrl = '$' -- needed to keep track of starting and ending chars
-
 main :: IO ()
 main = do
   content <- readFile "inputs/day-14.txt"
@@ -24,13 +22,13 @@ main = do
 parseInput :: String -> (Stock, Rules)
 parseInput content = let
   [rawStock, rawRules] = splitOn "\n\n" content
-  in (compress (ctrl:rawStock), H.fromList $ toPair <$> lines rawRules)
+  in (compress rawStock, H.fromList $ toPair <$> lines rawRules)
 
 toPair :: String -> (String, Char)
 toPair raw = let [s, [c]] = splitOn " -> " raw in (s, c)
 
 compress :: String -> Stock
-compress [x]           = H.singleton [x, ctrl] 1
+compress [x]           = H.singleton [x, '$'] 1
 compress (a:rst@(b:_)) = H.insertWith (+) [a, b] 1 (compress rst)
 
 repeatPolymerize :: Int -> Rules -> Stock -> Stock
@@ -52,10 +50,8 @@ stepDiff :: Stock -> Rules -> Int -> Int
 stepDiff t r s = countDiff $ repeatPolymerize s r t
 
 countDiff :: Stock -> Int
-countDiff t = let
-  counts = H.elems $ H.delete ctrl $ H.map (`div` 2) $ count $ H.toList t
-  in maximum counts - minimum counts
+countDiff t = let counts = H.elems $ count $ H.toList t in maximum counts - minimum counts
 
 count :: [(String, Int)] -> Counts
 count []     = H.empty
-count ((s, c):xs) = foldr (flip (H.insertWith (+)) c) (count xs) s
+count (([s, _], c):xs) = H.insertWith (+) s c (count xs)
