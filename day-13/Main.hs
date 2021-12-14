@@ -34,24 +34,19 @@ toFold raw = let
     ["y", v] -> Y $ toInt v
 
 foldPoints :: Fold -> Points -> Points
-foldPoints f p = let
-  folded = S.map (foldPoint f) p
-  in S.map (flip (op (-)) (getCorrection folded)) folded
+foldPoints f = S.map (foldPoint f)
 
 foldPoint :: Fold -> Point -> Point
 foldPoint (Y fy) (x, y) | y > fy= (x, 2 * fy - y)
 foldPoint (X fx) (x, y) | x > fx = (2 * fx - x, y)
 foldPoint  _ p = p
 
-getCorrection :: Points -> Point
-getCorrection = foldr (op min) (0, 0)
-
-op :: (Int -> Int -> Int) -> Point -> Point -> Point
-op f (x, y) (cx, cy) = (f x cx, f y cy)
+maxCoords :: Point -> Point -> Point
+maxCoords (x, y) (cx, cy) = (max x cx, max y cy)
 
 printPoints :: Points -> String
 printPoints p = let
-  (mx, my) = foldr (op max) (0, 0) p
+  (mx, my) = foldr maxCoords (0, 0) p
   in intercalate "\n" $ printRow p mx <$> [0..my]
 
 printRow :: Points -> Int -> Int -> String
