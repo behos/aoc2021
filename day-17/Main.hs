@@ -3,7 +3,21 @@ module Main where
 import           Debug.Trace
 import           Lib
 
-type StepFn = (Int -> Int -> Int -> Int -> [Int])
+type Bounds = (Int, Int)
+
+class Vel a where
+  step :: (Int, a) -> (Int, a)
+  done :: Bounds -> (Int, a) -> Bool
+
+newtype XVel = XVel Int
+instance Vel XVel where
+  step (pos, XVel v) = (pos + v, XVel $ max 0 (v - 1))
+  done (mn, mx) (pos, XVel v) = v == 0 && (pos < mn || pos > mx)
+
+newtype YVel = YVel Int
+instance Vel YVel where
+  step (pos, YVel v) = (pos + v, YVel (v - 1))
+  done (mn, _) (pos, _) = pos < mn
 
 main :: IO ()
 main = let
@@ -20,32 +34,23 @@ maxHeight y = div (abs y * (abs y - 1)) 2
 allVelocities :: Int -> Int -> Int -> Int -> Int
 allVelocities minx maxx miny maxy = let
   xRange = [0..maxx]
-  allX = stepsInRange minx maxx xSteps <$> xRange
+  allX = stepsInRange 0 (minx, maxx) . (0,) . XVel  <$> xRange
   yRange = [miny..(abs miny - 1)]
-  allY = stepsInRange miny maxy ySteps <$> yRange
+  allY = stepsInRange 0 (miny, maxy) . (0,) . YVel <$> yRange
   in matchingPairs allX allY
 
-stepsInRange :: Int -> Int -> StepFn -> Int -> [Int]
-stepsInRange mn mx f v =
-  fst <$> filter (\(i, p) -> p <= mx && p >= mn) (zip [0..] (f mn mx 0 v))
-
-xSteps :: Int -> Int -> Int -> Int -> [Int]
--- avoid out of range infinity, our filters will never match
-xSteps minx maxx pos 0 | pos < minx || pos > maxx = []
-xSteps minx maxx pos vel = pos : xSteps minx maxx (pos + vel) (max 0 (vel - 1))
-
-ySteps :: Int -> Int -> Int -> Int -> [Int]
-ySteps miny _ pos _ | pos < miny = []
-ySteps miny maxy pos vel = pos : ySteps miny maxy (pos + vel) (vel - 1)
+stepsInRange :: (Vel a) =>  Int -> Bounds -> (Int, a) -> [Int]
+stepsInRange s bounds v | done bounds v = []
+stepsInRange s bounds@(mn, mx) v@(pos, vel) =
+  [s | mn <= pos && pos <= mx] ++ stepsInRange (s + 1) bounds (step v)
 
 matchingPairs :: [[Int]] -> [[Int]] -> Int
 matchingPairs [] _      = 0
-matchingPairs (x:xs) ys = length (filter (matching x) ys) + matchingPairs xs ys
+matchingPairs (x:xs) ys = sum (fromEnum . matching x <$> ys) + matchingPairs xs ys
 
 matching :: [Int] -> [Int] -> Bool
-matching _ [] = False
-matching [] _ = False
-matching (x:xs) (y:ys)
+matching x y | null x || null y = False
+matching ax@(x:xs) ay@(y:ys)
   | x == y = True
-  | x < y = matching xs (y:ys)
-  | otherwise = matching (x:xs) ys
+  | x < y = matching xs ay
+  | otherwise = matching ax ys
