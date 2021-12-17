@@ -116,6 +116,11 @@ executables:
     source-dirs:         day-16
     dependencies:
     - aoc2021
+  day-17:
+    main:                Main.hs
+    source-dirs:         day-17
+    dependencies:
+    - aoc2021
 tests:
   aoc2021-test:
     main:                Spec.hs

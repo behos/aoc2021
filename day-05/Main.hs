@@ -34,16 +34,6 @@ expand line@(p1, p2)
     , p2
     )
 
-direction :: Line -> Point
-direction ((x1, y1), (x2, y2)) = pointUnit (x2 - x1, y2 - y1)
-
-pointUnit :: Point -> Point
-pointUnit (x, y) = (intUnit x, intUnit y)
-
-intUnit :: Int -> Int
-intUnit 0 = 0
-intUnit x = div x $ abs x
-
 addPoints :: Point -> Point -> Point
 addPoints (x1, y1) (x2, y2) = (x1 + x2, y1 + y2)
 

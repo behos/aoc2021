@@ -5,6 +5,8 @@ module Lib
     , toHashMapMatrix
     , toPoint
     , Point
+    , direction
+    , intUnit
     ) where
 
 import qualified Data.HashMap.Strict as H
@@ -40,3 +42,13 @@ toVec input = V.unfoldr iter $ toInt . (: []) <$> input
 iter :: [a] -> Maybe (a, [a])
 iter []     = Nothing
 iter (x:xs) = Just (x, xs)
+
+direction :: (Point, Point) -> Point
+direction ((x1, y1), (x2, y2)) = pointUnit (x2 - x1, y2 - y1)
+
+pointUnit :: Point -> Point
+pointUnit (x, y) = (intUnit x, intUnit y)
+
+intUnit :: Int -> Int
+intUnit 0 = 0
+intUnit x = div x $ abs x
