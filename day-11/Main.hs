@@ -10,7 +10,7 @@ type Matrix = H.HashMap Point Int
 main :: IO ()
 main = do
   content <- readFile "inputs/day-11.txt"
-  let matrix = Lib.toHashMapMatrix content
+  let matrix = Lib.toHashMapIntMatrix content
   putStrLn "Part 1"
   print $ totalFlashes 100 matrix
   putStrLn "Part 2"
@@ -45,9 +45,3 @@ bumpPoint p m = let
 
 resetFlashing :: Matrix -> Matrix
 resetFlashing = H.map (\v -> if v > 9 then 0 else v)
-
-neighbors :: Point -> [Point]
-neighbors (x, y) = [(x + dx, y + dy) | dx <- adjacent, dy <- adjacent]
-
-adjacent :: [Int]
-adjacent = [-1, 0, 1]

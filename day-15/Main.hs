@@ -18,7 +18,7 @@ type Points = S.HashSet Point
 main :: IO ()
 main = do
   content <- readFile "inputs/day-15.txt"
-  let caveW = Lib.toHashMapMatrix content
+  let caveW = Lib.toHashMapIntMatrix content
   let distances = H.singleton (0, 0) 0
   let queue = (S.empty, [(0, 0)])
   putStrLn "Part 1"
