@@ -48,7 +48,7 @@ shortestPaths dims cw queue d = let
              updq = push q n
            in (updq, updd)
          else (q, d)
-    ) (popq, d) (neighbors p dims)
+    ) (popq, d) (Main.neighbors p dims)
   in shortestPaths dims cw updq updd
 
 risk :: CaveWeights -> Point -> Int
