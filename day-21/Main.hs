@@ -44,30 +44,15 @@ playUniverses :: Integer -> Int -> Player -> Player -> (Integer, Integer)
 playUniverses factor round p1 p2
   | score p1 >= 21 = (factor, 0)
   | score p2 >= 21 = (0, factor)
-  | odd round = let
-      (p11, p21) = playUniverses factor (round + 1) (movePlayer p1 3) p2
-      (p12, p22) = playUniverses (factor * 3) (round + 1) (movePlayer p1 4) p2
-      (p13, p23) = playUniverses (factor * 6) (round + 1) (movePlayer p1 5) p2
-      (p14, p24) = playUniverses (factor * 7) (round + 1) (movePlayer p1 6) p2
-      (p15, p25) = playUniverses (factor * 6) (round + 1) (movePlayer p1 7) p2
-      (p16, p26) = playUniverses (factor * 3) (round + 1) (movePlayer p1 8) p2
-      (p17, p27) = playUniverses factor (round + 1) (movePlayer p1 9) p2
-      in (p11 + p12 + p13 + p14 + p15 + p16 + p17, p21 + p22 + p23 + p24 + p25 + p26 + p27)
   | otherwise = let
-      (p11, p21) = playUniverses factor (round + 1) p1 (movePlayer p2 3)
-      (p12, p22) = playUniverses (factor * 3) (round + 1) p1 (movePlayer p2 4)
-      (p13, p23) = playUniverses (factor * 6) (round + 1) p1 (movePlayer p2 5)
-      (p14, p24) = playUniverses (factor * 7) (round + 1) p1 (movePlayer p2 6)
-      (p15, p25) = playUniverses (factor * 6) (round + 1) p1 (movePlayer p2 7)
-      (p16, p26) = playUniverses (factor * 3) (round + 1) p1 (movePlayer p2 8)
-      (p17, p27) = playUniverses factor (round + 1) p1 (movePlayer p2 9)
-    in (p11 + p12 + p13 + p14 + p15 + p16 + p17, p21 + p22 + p23 + p24 + p25 + p26 + p27)
+      next = round + 1
+      moveP1 = if odd round then movePlayer else const
+      moveP2 = if even round then movePlayer else const
+      in foldl'
+         (\(s1, s2) (f, m) -> let
+             (s1', s2') = playUniverses (factor * f) next (moveP1 p1 m) (moveP2 p2 m)
+             in (s1 + s1', s2 + s2')
+         ) (0, 0) universes
 
-probability :: Int -> Int
-probability 3 = 1
-probability 4 = 3
-probability 5 = 6
-probability 6 = 7
-probability 7 = 6
-probability 8 = 3
-probability 9 = 1
+universes :: [(Integer, Int)]
+universes = [(1, 3), (3, 4), (6, 5), (7, 6), (6, 7), (3, 8), (1, 9)]
