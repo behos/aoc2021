@@ -58,14 +58,6 @@ doOps lit@(cl:rstlit) (op, cop)
 doOps [] (Off, cop) = []
 doOps [] (On, cop) = [cop]
 
-splitOverlaps :: Cuboids -> Cuboid -> Cuboids
-splitOverlaps [] _ = []
-splitOverlaps
-  (c@((mnx, mny, mnz), (mxx, mxy, mxz)):rst)
-  nc@((mnx', mny', mnz'), (mxx', mxy', mxz'))
-  | overlapping c nc = splitCuboid c nc ++ splitOverlaps rst nc
-  | otherwise = c : splitOverlaps rst nc
-
 overlapping :: Cuboid -> Cuboid -> Bool
 overlapping ((mnx, mny, mnz), (mxx, mxy, mxz)) ((mnx', mny', mnz'), (mxx', mxy', mxz')) =
   not (
