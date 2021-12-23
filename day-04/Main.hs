@@ -18,14 +18,14 @@ main = do
   print $ playToLose input boards
 
 data PointState = PointState
-  { checked :: Bool,
-    val     :: Int
+  { checked :: Bool
+  , val     :: Int
   }
   deriving (Show)
 
 data Board = Board
-  { numPoints   :: HashMap.HashMap Int Point,
-    pointStates :: HashMap.HashMap Point PointState
+  { numPoints   :: HashMap.HashMap Int Point
+  , pointStates :: HashMap.HashMap Point PointState
   }
   deriving (Show)
 

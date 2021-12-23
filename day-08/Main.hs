@@ -79,28 +79,34 @@ is :: Int -> NumberMatcher
 is 0 = \numbers x -> let
   four = numbers ! 4
   eight = numbers ! 8
-  in HashSet.size x == 6 && HashSet.size (HashSet.intersection four $ HashSet.difference eight x) == 1
+  in HashSet.size x == 6
+     && HashSet.size (HashSet.intersection four $ HashSet.difference eight x) == 1
 is 1 = \numbers x -> HashSet.size x == 2
 is 2 = \numbers x -> let
   four = numbers ! 4
   eight = numbers ! 8
-  in HashSet.size x == 5 && HashSet.size (HashSet.intersection four $ HashSet.difference eight x) == 2
+  in HashSet.size x == 5
+     && HashSet.size (HashSet.intersection four $ HashSet.difference eight x) == 2
 is 3 = \numbers x -> let
   four = numbers ! 4
   nine = numbers ! 9
-  in HashSet.size x == 5 && HashSet.size (HashSet.intersection four $ HashSet.difference nine x) == 1
+  in HashSet.size x == 5
+     && HashSet.size (HashSet.intersection four $ HashSet.difference nine x) == 1
 is 4 = \numbers x -> HashSet.size x == 4
 is 5 = \numbers x -> let
   one = numbers ! 1
   nine = numbers ! 9
-  in HashSet.size x == 5 && HashSet.size (HashSet.intersection one $ HashSet.difference nine x) == 1
+  in HashSet.size x == 5
+     && HashSet.size (HashSet.intersection one $ HashSet.difference nine x) == 1
 is 6 = \numbers x -> let
   one = numbers ! 1
   eight = numbers ! 8
-  in HashSet.size x == 6 && HashSet.size (HashSet.intersection one $ HashSet.difference eight x) == 1
+  in HashSet.size x == 6
+     && HashSet.size (HashSet.intersection one $ HashSet.difference eight x) == 1
 is 7 = \numbers x -> HashSet.size x == 3
 is 8 = \numbers x -> HashSet.size x == 7
 is 9 = \numbers x -> let
   four = numbers ! 4
   eight = numbers ! 8
-  in HashSet.size x == 6 && HashSet.size (HashSet.intersection four $ HashSet.difference eight x) == 0
+  in HashSet.size x == 6
+     && HashSet.size (HashSet.intersection four $ HashSet.difference eight x) == 0

@@ -67,13 +67,14 @@ findMinEnergy c s@((ra, rb, rc, rd ), h)
     && all (D ==) rd
   = (H.insert s (Just 0) c, Just 0)
 findMinEnergy c s = let
-  (c', min) = case allMoves s of
-          [] -> (c, Nothing)
-          nextMoves -> foldl'
-            (\(c', min) (s', e) -> let
-                (c'', min') = findMinEnergy c' s'
-                in (c'', somethingMin min (Just (e +) <*> min'))
-            ) (c, Nothing) nextMoves
+  (c', min) =
+    case allMoves s of
+      [] -> (c, Nothing)
+      nextMoves -> foldl'
+        (\(c', min) (s', e) -> let
+            (c'', min') = findMinEnergy c' s'
+            in (c'', somethingMin min (Just (e +) <*> min'))
+        ) (c, Nothing) nextMoves
   in (H.insert s min c', min)
 
 somethingMin :: Maybe Int -> Maybe Int -> Maybe Int
